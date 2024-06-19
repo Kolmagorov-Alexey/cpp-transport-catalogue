@@ -3,33 +3,33 @@
  namespace transport_catalogue{
 	namespace detail{
 		namespace bus{
-void Query_bus(TransportCatalogue& catalogue, std::string_view str) {
-    auto entry = 4;
-    str = str.substr(entry);
+            
+void QueryBus(TransportCatalogue& catalogue, std::string_view str) {
     
-    Bus* bus = catalogue.Get_bus(str);
-    if (bus != nullptr) {
-        std::cout << "Bus " << bus->name_ << ": "
-                  << bus->stops_.size() << " stops on route, "
-                  << (catalogue.Get_uniq_stops(bus)).size() << " unique stops, "
-                  << std::setprecision(6) << catalogue.Get_length(bus) << " route length" << std::endl;
-    } else {      
-        std::cout << "Bus " << str << ": not found" << std::endl;
-    }  
+    BusInfoRoute bus_info_route = catalogue.GetBusInfo(str);
+    if (bus_info_route.not_found) { std::cout << "Bus " << bus_info_route.name << ": not found" << std::endl; }
+      else {
+          std::cout << "Bus " << bus_info_route.name << ": "
+           << bus_info_route.stops_count << " stops on route, "
+           << bus_info_route.unique_stops_count << " unique stops, "
+           << std::setprecision(6) << bus_info_route.length << " route length" << std::endl;
+    }
 }
-		}//end namespace bus
+                    }//end namespace bus
+        
        namespace stop{
-void Query_stop(TransportCatalogue& catalogue, std::string_view stop_name) {
+void QueryStop(TransportCatalogue& catalogue, std::string_view stop_name) {
+    
     auto entry = 5;
     stop_name = stop_name.substr(entry);
     std::unordered_set<const Bus*> unique_buses;      
     std::unordered_set<std::string_view> unique_buses_name;   
     std::vector <std::string> bus_name_v;
     
-    Stop* stop = catalogue.Get_stop(stop_name);
+    Stop* stop = catalogue.GetStop(stop_name);
     
     if (stop != NULL) {
-        unique_buses = catalogue.Stop_get_uniq_buses(stop);
+        unique_buses = catalogue.StopGetUniqBuses(stop);
         
         if (unique_buses.size() == 0) {
             std::cout << "Stop " << stop_name << ": no buses" << std::endl;
@@ -57,9 +57,9 @@ void Query_stop(TransportCatalogue& catalogue, std::string_view stop_name) {
         
 void Query_(TransportCatalogue& catalogue, std::string_view str) {
     if (str.find("Bus") != str.npos) {
-        bus::Query_bus(catalogue, str);
+        bus::QueryBus(catalogue, str);
     } else if (str.find("Stop") != str.npos) {
-        stop::Query_stop(catalogue, str);
+        stop::QueryStop(catalogue, str);
     } else {
         std::cout << "Error query" << std::endl;
     }

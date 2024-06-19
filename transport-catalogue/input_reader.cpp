@@ -5,7 +5,7 @@
 namespace transport_catalogue{
 	namespace detail{
 		namespace stop{
-Stop Split_stop(std::string str) {
+Stop SplitStop(std::string str) {
     auto twopoint_pos = str.find(':');
     auto comma_pos = str.find(',');
     auto entry_length = 5;
@@ -14,16 +14,16 @@ Stop Split_stop(std::string str) {
  
     _stop.name_ = str.substr(entry_length, 
                                   twopoint_pos - entry_length);
-    _stop.latitude_ = stod(str.substr(twopoint_pos + distance, 
+    _stop.coordinates.latitude = stod(str.substr(twopoint_pos + distance, 
                                       comma_pos - twopoint_pos - distance));
-    _stop.longitude_ = stod(str.substr(comma_pos + distance));
+    _stop.coordinates.longitude = stod(str.substr(comma_pos + distance));
     
     return _stop;
 }
 		}//ens namespace stop
         
 		namespace bus{
-Bus Split_bus(TransportCatalogue& catalogue, std::string_view str) {
+Bus SplitBus(TransportCatalogue& catalogue, std::string_view str) {
     auto entry_length = 4;
     auto distance = 2;
     auto twopoint_pos = str.find(':');
@@ -38,13 +38,13 @@ Bus Split_bus(TransportCatalogue& catalogue, std::string_view str) {
         auto tire_pos = str.find('-');
         
         while (tire_pos != std::string_view::npos) {
-            bus.stops_.push_back(catalogue.Get_stop(str.substr(0, tire_pos - 1)));
+            bus.stops_.push_back(catalogue.GetStop(str.substr(0, tire_pos - 1)));
             
             str = str.substr(tire_pos + distance);
             tire_pos = str.find('-');
         }
         
-        bus.stops_.push_back(catalogue.Get_stop(str.substr(0, tire_pos - 1)));
+        bus.stops_.push_back(catalogue.GetStop(str.substr(0, tire_pos - 1)));
         size_t size_ = bus.stops_.size() - 1;
         
         for (size_t i = size_; i > 0; i--) {
@@ -53,13 +53,13 @@ Bus Split_bus(TransportCatalogue& catalogue, std::string_view str) {
         
     } else {
         while (more_pos != std::string_view::npos) {
-            bus.stops_.push_back(catalogue.Get_stop(str.substr(0, more_pos - 1)));
+            bus.stops_.push_back(catalogue.GetStop(str.substr(0, more_pos - 1)));
             
             str = str.substr(more_pos + distance);
             more_pos = str.find('>');
         }
         
-        bus.stops_.push_back(catalogue.Get_stop(str.substr(0, more_pos - 1)));
+        bus.stops_.push_back(catalogue.GetStop(str.substr(0, more_pos - 1)));
     }
     return bus;
 }
@@ -82,7 +82,7 @@ void FillTransportCatalogue(std::istream& input,TransportCatalogue& catalogue) {
                 str = str.substr(space_pos);
  
                 if (str.find("Bus") == str.npos) {
-                    catalogue.Add_stop(stop::Split_stop(str));
+                    catalogue.AddStop(stop::SplitStop(str));
                 } else {
                     buses.push_back(str);
                 }
@@ -90,7 +90,7 @@ void FillTransportCatalogue(std::istream& input,TransportCatalogue& catalogue) {
         }
         
         for (auto &bus : buses) {
-            catalogue.Add_bus(bus::Split_bus(catalogue, bus));
+            catalogue.AddBus(bus::SplitBus(catalogue, bus));
         }
     }
 }
