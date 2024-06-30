@@ -64,33 +64,72 @@ Bus SplitBus(TransportCatalogue& catalogue, std::string_view str) {
     return bus;
 }
 		}//end namespace bus
+        namespace distance {
+            std::vector<Distance> SplitDistances(TransportCatalogue& catalogue, const std::string& str) {
+                std::vector<Distance> distances;
+                auto entry_length = 5;
+                auto twopoint_pos = str.find(':');
+                auto space = 2;
+
+                std::string str_copy = str;
+                std::string name = str_copy.substr(entry_length,
+                    twopoint_pos - entry_length);
+                str_copy = str_copy.substr(str_copy.find(',') + 1);
+                str_copy = str_copy.substr(str_copy.find(',') + space);
+
+                while (str_copy.find(',') != std::string::npos) {
+                    int distance = stoi(str_copy.substr(0, str_copy.find('m')));
+                    std::string stop_dist_name = str_copy.substr(str_copy.find('m') + entry_length);
+                    stop_dist_name = stop_dist_name.substr(0, stop_dist_name.find(','));
+                    distances.push_back({ catalogue.GetStop(name),
+                                          catalogue.GetStop(stop_dist_name), distance });
+                    str_copy = str_copy.substr(str_copy.find(',') + space);
+                }
+                std::string last_name = str_copy.substr(str_copy.find('m') + entry_length);
+                int distance = stoi(str_copy.substr(0, str_copy.find('m')));
+                distances.push_back({ catalogue.GetStop(name), catalogue.GetStop(last_name), distance });
+
+                return distances;
+            }
+        }//end namespace distance
 void FillTransportCatalogue(std::istream& input,TransportCatalogue& catalogue) {
     
     std::string count;
     std::getline(input, count);
-    
+
     if (count != "") {
         std::string str;
         std::vector<std::string> buses;
+        std::vector<std::string> stops;
         int amount = stoi(count);
-              
+        auto bus_distance = 3;
+
         for (int i = 0; i < amount; ++i) {
-            std::getline(std::cin, str);
-            
+            std::getline(input, str);
+
             if (str != "") {
                 auto space_pos = str.find_first_not_of(' ');
                 str = str.substr(space_pos);
- 
-                if (str.find("Bus") == str.npos) {
-                    catalogue.AddStop(stop::SplitStop(str));
-                } else {
+
+                if (str.substr(0, bus_distance) != "Bus") {
+                    stops.push_back(str);
+                }
+                else {
                     buses.push_back(str);
                 }
             }
         }
-        
+
+        for (auto &stop : stops) {
+            catalogue.AddStop(stop::SplitStop(stop));
+        }
+
+        for (auto &stop : stops) {
+            catalogue.AddDistance(distance::SplitDistances(catalogue, stop));
+        }
+
         for (auto &bus : buses) {
-            catalogue.AddBus(bus::SplitBus(catalogue, bus));
+            catalogue.AddBus(bus::SplitBus( catalogue, bus));
         }
     }
 }
