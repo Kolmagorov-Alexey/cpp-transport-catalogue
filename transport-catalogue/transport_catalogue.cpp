@@ -92,9 +92,10 @@ std::unordered_set<const Bus*> TransportCatalogue::StopGetUniqBuses(const Stop* 
 }
 void TransportCatalogue::AddDistance(const std::vector<Distance>& distances) {
     for (auto& distance : distances) {
-        auto pair_dist = std::make_pair(distance.A, distance.B);
-        distance_to_stop_.insert(DistanceMap::value_type(pair_dist, distance.distance));
-
+        if (distance.A != nullptr && distance.B != nullptr) {
+              auto pair_dist = std::make_pair(distance.A, distance.B);
+              distance_to_stop_.insert(DistanceMap::value_type(pair_dist, distance.distance));
+        }
     }
 }
 size_t TransportCatalogue::GetDistanceStop(const Stop* from, const Stop* to) {
