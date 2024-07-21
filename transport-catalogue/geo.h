@@ -1,34 +1,23 @@
 #pragma once
 #include <cmath>
-
-namespace transport_catalogue{
-	namespace detail{
-		namespace geo{
-			
-const double PI = 3.1415926535;
-
-
-struct Coordinates {
-    double latitude;
-    double longitude;
+ 
+namespace geo {
     
+const int EARTH_RADIUS = 6371000;
+const double PI = 3.1415926535;
+    
+struct Coordinates {
+    double latitude=0.0;
+    double longitude=0.0;
+ 
     bool operator==(const Coordinates& other) const {
-        return latitude == other.latitude 
-            && longitude == other.longitude;
+        return latitude == other.latitude && longitude == other.longitude;
+    }
+    bool operator!=(const Coordinates& other) const {
+        return !(*this == other);
     }
 };
- 
-inline double ComputeDistance(Coordinates start, Coordinates end) {
-    using namespace std;
-    if (!(start == end)) {
-        const double dr = PI / 180.;
-        return acos(sin(start.latitude * dr) * sin(end.latitude * dr)
-                    + cos(start.latitude * dr) * cos(end.latitude * dr) 
-                    * cos(abs(start.longitude - end.longitude) * dr)) * 6371000;
-    } else {
-        return 0.0;
-    }
-}
-	}//end namespace geo
-}//end namespace detail
-}//end namespace transport_catalogue
+    
+double ComputeDistance(Coordinates A, Coordinates end);
+    
+}//end namespace geo
