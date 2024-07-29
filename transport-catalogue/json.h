@@ -16,22 +16,23 @@ using Dict = std::map<std::string, Node>;
 using Array = std::vector<Node>;
  
 class ParsingError : public std::runtime_error {
-   public:
+public:
     using runtime_error::runtime_error;
 };
-
+ 
 class Node final : private std::variant<std::nullptr_t, Array, Dict, bool, int, double, std::string> {
-   public:
-
+  public:
+    
     using variant::variant;
     using Value = variant;
-
+   
     const Array& AsArray() const;
-    const Dict& AsMap() const;
+    const Dict& AsDict() const;
     int AsInt() const;
     double AsDouble() const;
     bool AsBool() const;
     const std::string& AsString() const;
+ 
     bool IsNull() const;
     bool IsInt() const;
     bool IsDouble() const;
@@ -39,12 +40,13 @@ class Node final : private std::variant<std::nullptr_t, Array, Dict, bool, int, 
     bool IsBool() const;
     bool IsString() const;
     bool IsArray() const;
-    bool IsMap() const;
+    bool IsDict() const;
+ 
     const Value& GetValue() const;
+        
 
 };
-
-
+ 
 inline bool operator==(const Node& lhs, const Node& rhs) { 
     return lhs.GetValue() == rhs.GetValue();
 }  
@@ -53,7 +55,7 @@ inline bool operator!=(const Node& lhs, const Node& rhs) {
 } 
     
 class Document {
-public:
+  public:
     Document() = default;
     explicit Document(Node root);
     const Node& GetRoot() const;

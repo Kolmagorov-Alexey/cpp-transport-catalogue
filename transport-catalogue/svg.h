@@ -19,7 +19,7 @@ namespace svg {
         double x = 0.0;
         double y = 0.0;
     };
-
+ 
 struct Rgb {
 
     Rgb() = default;
@@ -29,7 +29,7 @@ struct Rgb {
     int green_ = 0;
     int blue_ = 0;
 };
- inline void PrintColor(std::ostream& out, Rgb& rgb);
+inline void PrintColor(std::ostream& out, Rgb& rgb);
  
 struct Rgba {
 
@@ -40,9 +40,8 @@ struct Rgba {
     int green_ = 0;
     int blue_ = 0;
     double opacity_ = 1.0;
-};
-
- inline void PrintColor(std::ostream& out, Rgba& rgba);
+};  
+inline void PrintColor(std::ostream& out, Rgba& rgba);
  
 using Color = std::variant<std::monostate, std::string, Rgb, Rgba>;
 inline const Color NoneColor{"none"};  
@@ -61,14 +60,14 @@ inline std::ostream &operator<<(std::ostream &out, StrokeLineCap stroke_line_cap
     using namespace std::literals;
     std::string_view sv;
     switch (stroke_line_cap) {
-        case svg::StrokeLineCap::BUTT :  sv = "butt"sv;
-            break;
-        case svg:: StrokeLineCap::ROUND : sv = "round"sv;
-            break;
-        case svg:: StrokeLineCap::SQUARE: sv = "square"sv;
-            break;
-        default:
-            break;
+    case svg::StrokeLineCap::BUTT:  sv = "butt"sv;
+        break;
+    case svg::StrokeLineCap::ROUND: sv = "round"sv;
+        break;
+    case svg::StrokeLineCap::SQUARE: sv = "square"sv;
+        break;
+    default:
+        break;
     }
     return out << sv;
 }
@@ -83,17 +82,18 @@ enum class StrokeLineJoin {
     
 inline std::ostream &operator<<(std::ostream &out, StrokeLineJoin stroke_line_join) {
     using namespace std::literals;
+    
     std::string_view sv;
     switch (stroke_line_join)
     {
-    case svg::StrokeLineJoin::ARCS : sv = "arcs"sv;
+    case svg::StrokeLineJoin::ARCS: sv = "arcs"sv;
         break;
-        
+
     case svg::StrokeLineJoin::BEVEL: sv = "bevel"sv;
         break;
     case svg::StrokeLineJoin::MITER: sv = "miter"sv;
         break;
-    case svg::StrokeLineJoin::MITER_CLIP : sv = "miter-clip"sv;
+    case svg::StrokeLineJoin::MITER_CLIP: sv = "miter-clip"sv;
         break;
     case svg::StrokeLineJoin::ROUND: sv = "round"sv;
         break;
@@ -262,7 +262,7 @@ class Document : public ObjectContainer {
 public: 
     
     void AddPtr(std::unique_ptr<Object>&& obj) override;
-    
+     
     void Render(std::ostream& out) const;
     
 };

@@ -1,5 +1,5 @@
 #include "map_renderer.h"
- 
+
 namespace map_renderer {
  
 bool SphereProjector::is_zero(double value) {

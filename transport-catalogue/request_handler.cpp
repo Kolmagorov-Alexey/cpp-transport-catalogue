@@ -1,80 +1,103 @@
 #include "request_handler.h"
-
  
 namespace request_handler {
     
-Node RequestHandler::ExecuteMakeNodeStop(int id_request, StopInfo stop_info){
-    Dict result;
+Node RequestHandler::ExecuteMakeNodeStop(int id_request, const StopInfo& stop_info){
+    Node result;
     Array buses;
+    Builder builder;
+ 
     std::string str_not_found = "not found";
-    
+ 
     if (stop_info.not_found) {
-        result.emplace("request_id", Node(id_request));
-        result.emplace("error_message", Node(str_not_found));
+        builder.StartDict()
+               .Key("request_id").Value(id_request)
+               .Key("error_message").Value(str_not_found)
+               .EndDict();
+        
+        result = builder.Build();
         
     } else {
-        result.emplace("request_id", Node(id_request));
-        
+        builder.StartDict()
+               .Key("request_id").Value(id_request)
+               .Key("buses").StartArray();
+ 
         for (std::string bus_name : stop_info.buses_name) {
-            buses.push_back(Node(bus_name));
+            builder.Value(bus_name);
         }
+ 
+        builder.EndArray().EndDict();
         
-        result.emplace("buses", Node(buses));
+        result = builder.Build();
     }
-    
-    return Node(result);
+ 
+    return result;
 }
  
-Node RequestHandler::ExecuteMakeNodeBus(int id_request, BusInfoRoute bus_info){
-    Dict result;
+Node RequestHandler::ExecuteMakeNodeBus(int id_request, const BusInfoRoute& bus_info){
+    Node result;
     std::string str_not_found = "not found";
-    
+ 
     if (bus_info.not_found) {
-        result.emplace("request_id", Node(id_request));
-        result.emplace("error_message", Node(str_not_found));
+        result = Builder{}.StartDict()
+                          .Key("request_id").Value(id_request)
+                          .Key("error_message").Value(str_not_found)
+                          .EndDict()
+                          .Build();
     } else {
-        result.emplace("request_id", Node(id_request));        
-        result.emplace("curvature", Node(bus_info.curvature));
-        result.emplace("route_length", Node(static_cast<int>(bus_info.route_length)));
-        result.emplace("stop_count", Node(bus_info.stops_on_route));
-        result.emplace("unique_stop_count", Node(bus_info.unique_stops));
+        result = Builder{}.StartDict()
+                          .Key("request_id").Value(id_request)
+                          .Key("curvature").Value(bus_info.curvature)
+                          .Key("route_length").Value(bus_info.route_length)
+                          .Key("stop_count").Value(bus_info.stops_on_route)
+                          .Key("unique_stop_count").Value(bus_info.unique_stops)
+                          .EndDict()
+                          .Build();
     }
-    
-    return Node(result);
+ 
+    return result;
 }    
       
 Node RequestHandler::ExecuteMakeNodeMap(int id_request, TransportCatalogue& catalogue_, RenderSettings render_settings){
-    Dict result;
+    Node result;
+ 
     std::ostringstream map_stream;
     std::string map_str;
  
-    MapRenderer map_catalogue(render_settings);      
+    MapRenderer map_catalogue(render_settings);
+    
     map_catalogue.InitSphereProjector(GetStopsCoordinates(catalogue_));
+    
     ExecuteRenderMap(map_catalogue, catalogue_);
     map_catalogue.GetStreamMap(map_stream);
     map_str = map_stream.str();
  
-    result.emplace("request_id", Node(id_request));
-    result.emplace("map", Node(map_str));
-    
-    return Node(result);
+    result = Builder{}.StartDict()
+                      .Key("request_id").Value(id_request)
+                      .Key("map").Value(map_str)
+                      .EndDict()
+                      .Build();
+ 
+    return result;
 }
     
-void RequestHandler::ExecuteQueries(TransportCatalogue& catalogue, std::vector<StatRequest>& stat_requests, RenderSettings& render_settings){
+void RequestHandler::ExecuteQueries(TransportCatalogue& catalogue, 
+                                     std::vector<StatRequest>& stat_requests, 
+                                     RenderSettings& render_settings) {
     std::vector<Node> result_request;
-    
     for (StatRequest req : stat_requests) {
-        
+ 
         if (req.type == "Stop") {
-            result_request.push_back(ExecuteMakeNodeStop(req.id, StopQuery(catalogue, req.name))); 
+            result_request.push_back(ExecuteMakeNodeStop(req.id, StopQuery(catalogue, req.name)));
+            
         } else if (req.type == "Bus") {
             result_request.push_back(ExecuteMakeNodeBus(req.id, BusQuery(catalogue, req.name)));
-        } else if(req.type == "Map") {            
+            
+        } else if (req.type == "Map") {
             result_request.push_back(ExecuteMakeNodeMap(req.id, catalogue, render_settings));
-        }  
-        
+        }
     }
-    
+ 
     doc_out = Document{Node(result_request)};
 }
  
@@ -187,7 +210,7 @@ BusInfoRoute RequestHandler::BusQuery(TransportCatalogue& catalogue, std::string
         bus_info.stops_on_route = static_cast<int>(bus->stops.size());
         bus_info.unique_stops = static_cast<int>(catalogue.GetUniqStops(bus).size());
         bus_info.route_length = static_cast<int>(catalogue.GetDistanceToBus(bus));
-        bus_info.curvature = static_cast<double>(catalogue.GetDistanceToBus(bus)
+        bus_info.curvature = double(catalogue.GetDistanceToBus(bus)
                                     /catalogue.GetGeoLength(bus));                    
     } else {  
         bus_info.name = bus_name;
@@ -224,8 +247,6 @@ StopInfo RequestHandler::StopQuery(TransportCatalogue& catalogue, std::string_vi
     return stop_info;
 }
     
-const Document& RequestHandler::GetDocument(){
-    return doc_out;
-}
+const Document& RequestHandler::GetDocument() {return doc_out;}
     
 }//end namespace request_handler

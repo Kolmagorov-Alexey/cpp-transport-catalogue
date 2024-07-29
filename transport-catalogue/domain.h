@@ -17,8 +17,8 @@ struct StatRequest {
 struct Bus;
     
 struct Stop {    
-    std::string name;   
-    geo::Coordinates coordinates;  
+    std::string name;
+    geo::Coordinates coordinates;
     std::vector<Bus*> buses;
 };
  
@@ -26,7 +26,6 @@ struct Bus {
     std::string name;
     std::vector<Stop*> stops;
     bool is_roundtrip;
-    
 };
  
 struct Distance {    

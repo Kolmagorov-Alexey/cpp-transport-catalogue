@@ -3,7 +3,6 @@
 #include <optional>
 #include <algorithm>
 #include <cstdlib>
- 
 #include "domain.h"
 #include "geo.h"
 #include "svg.h"

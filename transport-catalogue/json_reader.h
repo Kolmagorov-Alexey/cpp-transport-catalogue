@@ -23,7 +23,7 @@ public:
     Bus ParseNodeBus(Node& node, TransportCatalogue& catalogue);
     std::vector<Distance> ParseNodeDistances(Node& node, TransportCatalogue& catalogue);
     
-    //const Document& GetDocument() const;
+    
     
 private:
     Document document_;

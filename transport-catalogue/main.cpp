@@ -9,14 +9,13 @@ using namespace request_handler;
 using namespace transport_catalogue::detail::json;
  
 int main() {
-    
-    TransportCatalogue catalogue; 
     vector<StatRequest> stat_request;
     RenderSettings render_settings;
-           
+    TransportCatalogue catalogue;
+
     JSONReader json_reader;
     RequestHandler request_handler;
-        
+  
     json_reader = JSONReader(cin);    
     json_reader.Parse(catalogue, stat_request, render_settings);
     

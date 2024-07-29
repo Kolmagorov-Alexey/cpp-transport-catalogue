@@ -61,9 +61,9 @@ void Object::Render(const RenderContext& context) const {
     RenderObject(context);
     context.out_ << std::endl;
 }
- void Document::AddPtr(std::unique_ptr<Object>&& obj){
- objects_.emplace_back(std::move(obj));
- }
+void Document::AddPtr(std::unique_ptr<Object>&& obj){
+    objects_.emplace_back(std::move(obj));
+}
 
 Circle& Circle::SetCenter(Point center)  {
     center_ = center;

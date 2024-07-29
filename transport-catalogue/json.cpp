@@ -88,11 +88,11 @@ Node LoadNumber(std::istream& input) {
         read_digits();
     }
  
-    bool is_int = true;
+    bool IsInt = true;
     if (input.peek() == '.') {
         read_char();
         read_digits();
-        is_int = false;
+        IsInt = false;
     }
  
     if (int ch = input.peek(); ch == 'e' || ch == 'E') {
@@ -103,11 +103,11 @@ Node LoadNumber(std::istream& input) {
         }
  
         read_digits();
-        is_int = false;
+        IsInt = false;
     }
  
     try {
-        if (is_int) {
+        if (IsInt) {
             try {
                 return Node(std::stoi(number));
                 
@@ -234,6 +234,7 @@ Node LoadNode(std::istream& input) {
 } 
     
 }//end namespace
+   
 
 const Array& Node::AsArray() const {
     using namespace std::literals;
@@ -245,10 +246,10 @@ const Array& Node::AsArray() const {
     }
 }
  
-const Dict& Node::AsMap() const {
+const Dict& Node::AsDict() const {
     using namespace std::literals;
     
-    if (!IsMap()) {
+    if (!IsDict()) {
         throw std::logic_error("value is not a dictionary"s);
     } else {
         return std::get<Dict>(*this);  
@@ -304,7 +305,7 @@ bool Node::IsRealDouble() const {return std::holds_alternative<double>(*this);}
 bool Node::IsBool() const {return std::holds_alternative<bool>(*this);}
 bool Node::IsString() const {return std::holds_alternative<std::string>(*this);}
 bool Node::IsArray() const {return std::holds_alternative<Array>(*this);}
-bool Node::IsMap() const {return std::holds_alternative<Dict>(*this);}
+bool Node::IsDict() const {return std::holds_alternative<Dict>(*this);}
  
 const Node::Value& Node::GetValue() const {return *this;}
    

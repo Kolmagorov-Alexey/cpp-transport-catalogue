@@ -11,16 +11,16 @@ void TransportCatalogue::AddStop(const Stop& stop_) {
  
 void TransportCatalogue::AddBus(const Bus& bus_) {
     Bus* bus_buf;
-    
-    buses_.push_back(bus_); 
+
+    buses_.push_back(bus_);
     bus_buf = &buses_.back();
     busname_to_bus_.insert(BusMap::value_type(bus_buf->name, bus_buf));
- 
+
     for (Stop* stop : bus_buf->stops) {
-         stop->buses.push_back(bus_buf);
+        stop->buses.push_back(bus_buf);
     }
 }
- 
+     
 void TransportCatalogue::AddDistance(const std::vector<Distance>& distances) {
     for (auto &distance : distances){
         auto dist_pair = std::make_pair(distance.A, distance.B);
@@ -92,7 +92,7 @@ size_t TransportCatalogue::GetDistanceStop(const Stop* from, const Stop* to) {
 size_t TransportCatalogue::GetDistanceToBus(const Bus* bus) {
     size_t distance = 0;
     auto stops_size = bus->stops.size() - 1;
-    for (int i = 0; i < stops_size; ++i) {
+    for (int i = 0; i < static_cast<int>(stops_size); ++i) {
         distance += GetDistanceStop(bus->stops[i], bus->stops[i+1]);
     }
     return distance;
