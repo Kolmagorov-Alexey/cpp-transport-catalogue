@@ -7,32 +7,32 @@ namespace builder {
  
 //---------------------BaseContext---------------------
  
-BaseContext::BaseContext(Builder& builder) : builder_(builder) {}
+Builder::BaseContext::BaseContext(Builder& builder) : builder_(builder) {}
  
-KeyContext BaseContext::Key(const std::string& key) {return builder_.Key(key);}
-Builder& BaseContext::Value(const Node::Value& value) {return builder_.Value(value);}
+Builder::KeyContext Builder::BaseContext::Key(const std::string& key) {return builder_.Key(key);}
+Builder& Builder::BaseContext::Value(const Node::Value& value) {return builder_.Value(value);}
  
-DictionaryContext BaseContext::StartDict() {return DictionaryContext(builder_.StartDict());}
-Builder& BaseContext::EndDict() {return builder_.EndDict();}
+Builder::DictionaryContext Builder::BaseContext::StartDict() {return DictionaryContext(builder_.StartDict());}
+Builder& Builder::BaseContext::EndDict() {return builder_.EndDict();}
  
-ArrayContext BaseContext::StartArray() {return ArrayContext(builder_.StartArray());}
-Builder& BaseContext::EndArray() {return builder_.EndArray();}
+Builder::ArrayContext Builder::BaseContext::StartArray() {return ArrayContext(builder_.StartArray());}
+Builder& Builder::BaseContext::EndArray() {return builder_.EndArray();}
     
 //---------------------KeyContext-----------------------
  
-KeyContext::KeyContext(Builder& builder) : BaseContext(builder) {}
+Builder::KeyContext::KeyContext(Builder& builder) : BaseContext(builder) {}
  
-DictionaryContext KeyContext::Value(const Node::Value& value) {return BaseContext::Value(value);}
+Builder::DictionaryContext Builder::KeyContext::Value(const Node::Value& value) {return BaseContext::Value(value);}
     
 //---------------------DictionaryContext----------------
  
-DictionaryContext::DictionaryContext(Builder& builder) : BaseContext(builder) {}
+Builder::DictionaryContext::DictionaryContext(Builder& builder) : BaseContext(builder) {}
  
 //---------------------ArrayContext---------------------
  
-ArrayContext::ArrayContext(Builder& builder) : BaseContext(builder) {}
+Builder::ArrayContext::ArrayContext(Builder& builder) : BaseContext(builder) {}
  
-ArrayContext ArrayContext::Value(const Node::Value& value) {return BaseContext::Value(value); }
+Builder::ArrayContext Builder::ArrayContext::Value(const Node::Value& value) {return BaseContext::Value(value); }
  
 //---------------------Builder--------------------------
 
@@ -117,7 +117,7 @@ void Builder::AddNode(const Node& node) {
     }
 }
  
-KeyContext Builder::Key(const std::string& key_) {
+Builder::KeyContext Builder::Key(const std::string& key_) {
     if (nodes_stack_.empty()) {
         throw std::logic_error("unable to create key");
     }
@@ -137,7 +137,7 @@ Builder& Builder::Value(const Node::Value& value_) {
     return *this;
 }
  
-DictionaryContext Builder::StartDict() {
+Builder::DictionaryContext Builder::StartDict() {
     nodes_stack_.emplace_back(std::move(std::make_unique<Node>(Dict())));
  
     return DictionaryContext(*this);
@@ -160,7 +160,7 @@ Builder& Builder::EndDict() {
     return *this;
 }
  
-ArrayContext Builder::StartArray() {
+Builder::ArrayContext Builder::StartArray() {
     nodes_stack_.emplace_back(std::move(std::make_unique<Node>(Array())));
  
     return ArrayContext(*this);

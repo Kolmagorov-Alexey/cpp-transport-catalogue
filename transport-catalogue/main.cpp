@@ -15,7 +15,7 @@ int main() {
 
     JSONReader json_reader;
     RequestHandler request_handler;
-  
+    
     json_reader = JSONReader(cin);    
     json_reader.Parse(catalogue, stat_request, render_settings);
     
