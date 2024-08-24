@@ -3,6 +3,8 @@
 #include <optional>
 #include <algorithm>
 #include <cstdlib>
+#include<vector>
+ 
 #include "domain.h"
 #include "geo.h"
 #include "svg.h"
@@ -27,26 +29,26 @@ public:
     svg::Point operator()(geo::Coordinates coords) const;
  
 private:
-    double padding_=0.0;
-    double min_lon_ = 0;
-    double max_lat_ = 0;
-    double zoom_coeff_ = 0;
+    double padding_ = 0.0;
+    double min_lon_ = 0.0;
+    double max_lat_ = 0.0;
+    double zoom_coeff_ = 0.0;
     
     bool is_zero(double value);
 };
     
 struct RenderSettings {
-    double width_=0.0;
-    double height_=0.0;
-    double padding_=0.0;
-    double line_width_=0.0;
-    double stop_radius_=0.0;
-    int bus_label_font_size_=0;
+    double width_ = 0.0;
+    double height_ = 0.0;
+    double padding_ = 0.0;
+    double line_width_ = 0.0;
+    double stop_radius_ = 0.0;
+    int bus_label_font_size_ = 0;
     std::pair<double, double> bus_label_offset_;
-    int stop_label_font_size_=0;
+    int stop_label_font_size_ = 0;
     std::pair<double, double> stop_label_offset_;
     svg::Color underlayer_color_;
-    double underlayer_width_=0.0;
+    double underlayer_width_ = 0.0;
     std::vector<svg::Color> color_palette_;
 };
     

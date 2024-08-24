@@ -12,35 +12,35 @@
  
 namespace svg {
 
- struct Point {
+    struct Point {
         Point() = default;
         Point(double x, double y) : x(x)
             , y(y) {}
         double x = 0.0;
         double y = 0.0;
     };
- 
-struct Rgb {
+    struct Rgb {
 
-    Rgb() = default;
-    Rgb(int red, int green, int blue);
-    
-    int red_ = 0;
-    int green_ = 0;
-    int blue_ = 0;
-};
-inline void PrintColor(std::ostream& out, Rgb& rgb);
- 
-struct Rgba {
+        Rgb() = default;
+        Rgb(uint8_t red, uint8_t green, uint8_t blue);
 
-    Rgba() = default;
-    Rgba(int red, int green, int blue, double opacity);
-    
-    int red_ = 0;
-    int green_ = 0;
-    int blue_ = 0;
-    double opacity_ = 1.0;
-};  
+        uint8_t red_ = 0;
+        uint8_t green_ = 0;
+        uint8_t blue_ = 0;
+    };
+    inline void PrintColor(std::ostream& out, Rgb& rgb);
+
+    struct Rgba {
+
+        Rgba() = default;
+        Rgba(uint8_t red, uint8_t green, uint8_t blue, double opacity);
+
+        uint8_t red_ = 0;
+        uint8_t green_ = 0;
+        uint8_t blue_ = 0;
+        double opacity_ = 1.0;
+    };
+
 inline void PrintColor(std::ostream& out, Rgba& rgba);
  
 using Color = std::variant<std::monostate, std::string, Rgb, Rgba>;
@@ -82,7 +82,6 @@ enum class StrokeLineJoin {
     
 inline std::ostream &operator<<(std::ostream &out, StrokeLineJoin stroke_line_join) {
     using namespace std::literals;
-    
     std::string_view sv;
     switch (stroke_line_join)
     {
@@ -126,7 +125,7 @@ public:
         return AsOwner();
     }
  
-    Owner& SetStokeLinejoin(StrokeLineJoin line_join) {
+    Owner& SetStokeLineJoin(StrokeLineJoin line_join) {
         stroke_line_join_ = line_join;
         return AsOwner();
     } 
@@ -262,7 +261,7 @@ class Document : public ObjectContainer {
 public: 
     
     void AddPtr(std::unique_ptr<Object>&& obj) override;
-     
+    
     void Render(std::ostream& out) const;
     
 };

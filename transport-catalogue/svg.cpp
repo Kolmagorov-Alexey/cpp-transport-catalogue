@@ -4,26 +4,26 @@ namespace svg {
  
 using namespace std::literals; 
  
-Rgb::Rgb(int red, int green, int blue) : red_(red)
+Rgb::Rgb(uint8_t red, uint8_t green, uint8_t blue) : red_(red)
                                                    , green_(green)
                                                    , blue_(blue) {}  
     
-Rgba::Rgba(int red, int green, int blue, double opacity) : red_(red)
+Rgba::Rgba(uint8_t red, uint8_t green, uint8_t blue, double opacity) : red_(red)
                                                                      , green_(green)
                                                                      , blue_(blue)
                                                                      , opacity_(opacity) {}
     
 inline void PrintColor(std::ostream& out, Rgb& rgb) {
-    out << "rgb("sv << rgb.red_ << ","sv
-                    << rgb.green_ << ","sv 
-                    << rgb.blue_ << ")"sv;
+    out << "rgb("sv << static_cast<short>(rgb.red_) << ","sv
+                    << static_cast<short>(rgb.green_) << ","sv 
+                    << static_cast<short>(rgb.blue_) << ")"sv;
 }
     
 inline void PrintColor(std::ostream& out, Rgba& rgba) {
-    out << "rgba("sv << rgba.red_ << ","sv 
-                     << rgba.green_ << ","sv 
-                     << rgba.blue_ << ","sv 
-                     << rgba.opacity_ << ")"sv;
+    out << "rgba("sv << static_cast<short>(rgba.red_) << ","sv 
+                     << static_cast<short>(rgba.green_) << ","sv 
+                     << static_cast<short>(rgba.blue_) << ","sv 
+                     << (rgba.opacity_) << ")"sv;
 }
     
 inline void PrintColor(std::ostream& out, std::monostate) {
@@ -61,7 +61,7 @@ void Object::Render(const RenderContext& context) const {
     RenderObject(context);
     context.out_ << std::endl;
 }
-void Document::AddPtr(std::unique_ptr<Object>&& obj){
+void Document:: AddPtr(std::unique_ptr<Object>&& obj) {
     objects_.emplace_back(std::move(obj));
 }
 

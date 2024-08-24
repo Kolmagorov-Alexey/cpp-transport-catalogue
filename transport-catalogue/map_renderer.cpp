@@ -1,5 +1,5 @@
 #include "map_renderer.h"
-
+ 
 namespace map_renderer {
  
 bool SphereProjector::is_zero(double value) {
@@ -49,7 +49,7 @@ void MapRenderer::SetLineProperties(svg::Polyline& polyline,
     polyline.SetFillColor("none"s);
     polyline.SetStokeWidth(render_settings_.line_width_);
     polyline.SetStokeLinecap(svg::StrokeLineCap::ROUND);
-    polyline.SetStokeLinejoin(svg::StrokeLineJoin::ROUND);   
+    polyline.SetStokeLineJoin(svg::StrokeLineJoin::ROUND);   
 } 
     
 void MapRenderer::SetRouteTextCommonProperties(svg::Text& text, 
@@ -76,7 +76,7 @@ void MapRenderer::SetRouteTextAdditionalProperties(svg::Text& text,
     text.SetFillColor(render_settings_.underlayer_color_);
     text.SetStokeColor(render_settings_.underlayer_color_);
     text.SetStokeWidth(render_settings_.underlayer_width_);
-    text.SetStokeLinejoin(svg::StrokeLineJoin::ROUND);
+    text.SetStokeLineJoin(svg::StrokeLineJoin::ROUND);
     text.SetStokeLinecap(svg::StrokeLineCap::ROUND);
 }
  
@@ -124,7 +124,7 @@ void MapRenderer::SetStopsTextAdditionalProperties(svg::Text& text,
     text.SetFillColor(render_settings_.underlayer_color_);
     text.SetStokeColor(render_settings_.underlayer_color_);
     text.SetStokeWidth(render_settings_.underlayer_width_);
-    text.SetStokeLinejoin(svg::StrokeLineJoin::ROUND);
+    text.SetStokeLineJoin(svg::StrokeLineJoin::ROUND);
     text.SetStokeLinecap(svg::StrokeLineCap::ROUND);
 }
  

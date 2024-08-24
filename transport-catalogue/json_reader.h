@@ -2,6 +2,7 @@
 #include "json.h"
 #include "transport_catalogue.h"
 #include "map_renderer.h"
+#include "transport_router.h"
  
 namespace transport_catalogue {
 namespace detail {
@@ -16,14 +17,24 @@ public:
     void ParseNodeBase(const Node& root, TransportCatalogue& catalogue);
     void ParseNodeStat(const Node& root, std::vector<StatRequest>& stat_request);
     void ParseNodeRender(const Node& node, map_renderer::RenderSettings& render_settings);
-    void ParseNode(const Node& root, TransportCatalogue& catalogue, std::vector<StatRequest>& stat_request, map_renderer::RenderSettings& render_settings);
-    void Parse(TransportCatalogue& catalogue, std::vector<StatRequest>& stat_request, map_renderer::RenderSettings& render_settings);
+    void ParseNodeRouting(const Node& node, router::RoutingSettings& route_set);
+    
+    void ParseNode(const Node& root, 
+                    TransportCatalogue& catalogue, 
+                    std::vector<StatRequest>& stat_request, 
+                    map_renderer::RenderSettings& render_settings,
+                    router::RoutingSettings& routing_settings);
+    
+    void Parse(TransportCatalogue& catalogue, 
+               std::vector<StatRequest>& stat_request, 
+               map_renderer::RenderSettings& render_settings, 
+               router::RoutingSettings& routing_settings);
     
     Stop ParseNodeStop(Node& node);
-    Bus ParseNodeBus(Node& node, TransportCatalogue& catalogue);
+    Bus GetColor(Node& node, TransportCatalogue& catalogue);
     std::vector<Distance> ParseNodeDistances(Node& node, TransportCatalogue& catalogue);
     
-    
+   
     
 private:
     Document document_;

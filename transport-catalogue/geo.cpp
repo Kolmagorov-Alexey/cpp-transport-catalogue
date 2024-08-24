@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include "geo.h"
+
  
 #include <cmath>
  
@@ -17,5 +18,6 @@ double ComputeDistance(Coordinates A, Coordinates B) {
         return 0.0;
     }
 }
-    
+
+
 }//end namespace geo

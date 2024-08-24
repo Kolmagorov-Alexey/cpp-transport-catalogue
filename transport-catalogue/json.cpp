@@ -33,7 +33,7 @@ Node LoadArray(std::istream& input) {
         throw ParsingError("Array parsing error"s);
     }
  
-    return Node(std::move(array));
+    return Node(array);
 }
  
 Node LoadNull(std::istream& input) {
@@ -180,15 +180,15 @@ Node LoadDictionary(std::istream& input) {
     for (char ch; input >> ch && ch != '}';) {
         
         if (ch == '"') {
-            std::string key = LoadString(input).AsString();
+            std::string Key = LoadString(input).AsString();
  
             if (input >> ch && ch == ':') {
                 
-                if (dictionary.find(key) != dictionary.end()) {
-                    throw ParsingError("Duplicate key '"s + key + "' have been found");
+                if (dictionary.find(Key) != dictionary.end()) {
+                    throw ParsingError("Duplicate Key '"s + Key + "' have been found");
                 }
  
-                dictionary.emplace(std::move(key), LoadNode(input));
+                dictionary.emplace(std::move(Key), LoadNode(input));
                 
             } else {
                 throw ParsingError(": is expected but '"s + ch + "' has been found"s);
@@ -234,7 +234,6 @@ Node LoadNode(std::istream& input) {
 } 
     
 }//end namespace
-   
 
 const Array& Node::AsArray() const {
     using namespace std::literals;
@@ -294,7 +293,7 @@ bool Node::AsBool() const {
     if (!IsBool()) {
         throw std::logic_error("value is not a bool"s);
     } else {
-        return std::get<bool>(*this);   
+        return std::get<bool>(*this);
     }
 }
     
@@ -378,7 +377,7 @@ void PrintValue(const bool& value, const PrintContext& context) {
     context.out << std::boolalpha << value;
 }
  
- void PrintValue(const Array& nodes, const PrintContext& context) {
+[[maybe_unused]] void PrintValue(const Array& nodes, const PrintContext& context) {
     std::ostream& out = context.out;
     out << "[\n"sv;
     bool first = true;
@@ -400,13 +399,13 @@ void PrintValue(const bool& value, const PrintContext& context) {
     out.put(']');
 }
  
- void PrintValue(const Dict& nodes, const PrintContext& context) {
+[[maybe_unused]] void PrintValue(const Dict& nodes, const PrintContext& context) {
     std::ostream& out = context.out;
     out << "{\n"sv;
     bool first = true;
     auto inner_context = context.Indented();
     
-    for (const auto& [key, node] : nodes) {
+    for (const auto& [Key, node] : nodes) {
         if (first) {
             first = false;
         } else {
@@ -414,7 +413,7 @@ void PrintValue(const bool& value, const PrintContext& context) {
         }
  
         inner_context.PrintIndent();
-        PrintString(key, context.out);
+        PrintString(Key, context.out);
         out << ": "sv;
         PrintNode(node, inner_context);
     }

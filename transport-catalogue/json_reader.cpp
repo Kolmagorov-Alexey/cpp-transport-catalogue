@@ -1,3 +1,4 @@
+
 #include "json_reader.h"
  
 namespace transport_catalogue {
@@ -51,7 +52,7 @@ std::vector<Distance> JSONReader::ParseNodeDistances(Node& node, TransportCatalo
     return distances;
 }
  
-Bus JSONReader::ParseNodeBus(Node& node, TransportCatalogue& catalogue) {
+Bus JSONReader::GetColor(Node& node, TransportCatalogue& catalogue) {
     Bus bus;
     Dict bus_node;
     Array bus_stops;
@@ -129,7 +130,7 @@ void JSONReader::ParseNodeBase(const Node& root, TransportCatalogue& catalogue){
         }
         
         for (auto &bus : buses) {
-            catalogue.AddBus(ParseNodeBus(bus, catalogue));
+            catalogue.AddBus(GetColor(bus, catalogue));
         }
         
     } else {
@@ -150,16 +151,25 @@ void JSONReader::ParseNodeStat(const Node& node, std::vector<StatRequest>& stat_
             if (req_node.IsDict()) {
                 req_map = req_node.AsDict();
                 req.id = req_map.at("id").AsInt();
-                req.type = req_map.at("type").AsString();
+                req.type = req_map.at("type").AsString();               
  
-                if (req.type != "Map") {
+                if ((req.type == "Bus") || (req.type == "Stop")) {
                     req.name = req_map.at("name").AsString();
+                    req.from ="";
+                    req.to = "";
                 } else {
                     req.name = "";
+                    if(req.type == "Route"){
+                        req.from = req_map.at("from").AsString();
+                        req.to = req_map.at("to").AsString();
+                    }
+                    else{
+                        req.from ="";
+                        req.to = "";
+                    }
                 }
                 
-                stat_request.push_back(req);
-                
+                stat_request.push_back(req);                
             }   
         } 
         
@@ -265,7 +275,32 @@ void JSONReader::ParseNodeRender(const Node& node, map_renderer::RenderSettings&
     }
 }
     
-void JSONReader::ParseNode(const Node& root, TransportCatalogue& catalogue, std::vector<StatRequest>& stat_request, map_renderer::RenderSettings& render_settings){ 
+void JSONReader::ParseNodeRouting(const Node& node, router::RoutingSettings& route_set) {
+    Dict route;
+    
+    if (node.IsDict()) {
+        route = node.AsDict();
+ 
+        try {
+ 
+            route_set.bus_wait_time = route.at("bus_wait_time").AsDouble();
+            route_set.bus_velocity = route.at("bus_velocity").AsDouble();
+            
+        } catch(...) {
+            std::cout << "unable to Parse routing settings";
+        }
+        
+    } else {
+        std::cout << "routing settings is not map";
+    }
+ 
+}
+    
+void JSONReader::ParseNode(const Node& root, 
+                            TransportCatalogue& catalogue, 
+                            std::vector<StatRequest>& stat_request, 
+                            map_renderer::RenderSettings& render_settings, 
+                            router::RoutingSettings& routing_settings){ 
     Dict root_dictionary;
     
     if (root.IsDict()) {
@@ -289,16 +324,23 @@ void JSONReader::ParseNode(const Node& root, TransportCatalogue& catalogue, std:
             std::cout << "render_settings is empty";
         }
         
+        try {
+            ParseNodeRouting(root_dictionary.at("routing_settings"), routing_settings);
+        } catch(...) {
+            std::cout << "routing_settings is empty";
+        }
+        
     } else {
         std::cout << "root is not map";
     }
 }
     
-void JSONReader::Parse(TransportCatalogue& catalogue, std::vector<StatRequest>& stat_request, map_renderer::RenderSettings& render_settings) {  
+void JSONReader::Parse(TransportCatalogue& catalogue, std::vector<StatRequest>& stat_request, map_renderer::RenderSettings& render_settings, router::RoutingSettings& routing_settings) {  
     ParseNode(document_.GetRoot(), 
                catalogue, 
                stat_request,
-               render_settings);
+               render_settings,
+               routing_settings);
 }
     
 }//end namespace json

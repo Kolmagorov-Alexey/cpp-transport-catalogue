@@ -41,7 +41,7 @@ public:
     std::unordered_set<const Stop*> GetUniqStops(const Bus* bus);
     double GetGeoLength(Bus* bus);
     
-    size_t GetDistanceStop(const Stop* from, const Stop* to);
+    size_t GetDistanceStop(const Stop* from, const Stop* to) const;
     size_t GetDistanceToBus(const Bus* bus);
     
 private:    

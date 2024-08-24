@@ -1,5 +1,6 @@
+
 #pragma once
- 
+
 #include <iostream>
 #include <map>
 #include <string>
@@ -21,11 +22,11 @@ public:
 };
  
 class Node final : private std::variant<std::nullptr_t, Array, Dict, bool, int, double, std::string> {
-  public:
+public:
     
     using variant::variant;
     using Value = variant;
-   
+
     const Array& AsArray() const;
     const Dict& AsDict() const;
     int AsInt() const;
@@ -44,7 +45,6 @@ class Node final : private std::variant<std::nullptr_t, Array, Dict, bool, int, 
  
     const Value& GetValue() const;
         
-
 };
  
 inline bool operator==(const Node& lhs, const Node& rhs) { 
@@ -55,7 +55,7 @@ inline bool operator!=(const Node& lhs, const Node& rhs) {
 } 
     
 class Document {
-  public:
+public:
     Document() = default;
     explicit Document(Node root);
     const Node& GetRoot() const;
