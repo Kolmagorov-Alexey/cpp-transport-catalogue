@@ -20,7 +20,6 @@ public:
     
     std::optional<RouteInfo> GetRouteInfo(std::string_view start, 
                                             std::string_view end, 
-                                            TransportCatalogue& catalogue, 
                                             TransportRouter& routing) const;
     
     std::vector<geo::Coordinates> GetStopsCoordinates(TransportCatalogue& catalogue_) const;
@@ -32,7 +31,7 @@ public:
     Node ExecuteMakeNodeStop(int id_request, const StopInfo& query_result);
     Node ExecuteMakeNodeBus(int id_request, const BusInfoRoute& query_result);
     Node ExecuteMakeNodeMap(int id_request, TransportCatalogue& catalogue, RenderSettings render_settings);
-    Node ExecuteMakeNodeRoute(StatRequest& request, TransportCatalogue& catalogue, TransportRouter& routing);
+    Node ExecuteMakeNodeRoute(StatRequest& request, TransportRouter& routing);
     
     void ExecuteQueries(TransportCatalogue& catalogue, 
                          std::vector<StatRequest>& stat_requests, 

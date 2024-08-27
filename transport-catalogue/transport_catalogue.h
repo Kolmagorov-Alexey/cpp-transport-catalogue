@@ -33,7 +33,7 @@ public:
     void AddDistance(const std::vector<Distance>& distances);
     
     Bus* GetBus(std::string_view bus_name);
-    Stop* GetStop(std::string_view stop_name);
+    Stop* GetStop(std::string_view stop_name) const;
     BusMap GetBusnameToBus() const;
     StopMap GetStopnameToStop() const;
     

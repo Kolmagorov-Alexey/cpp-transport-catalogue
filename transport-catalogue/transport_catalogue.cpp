@@ -39,7 +39,7 @@ Bus* TransportCatalogue::GetBus(std::string_view bus_name) {
         return nullptr;
 }
     
-Stop* TransportCatalogue::GetStop(std::string_view stop_name) {
+Stop* TransportCatalogue::GetStop(std::string_view stop_name) const {
     if (stopname_to_stop_.count(stop_name)) {
         return stopname_to_stop_.at(stop_name);
     }

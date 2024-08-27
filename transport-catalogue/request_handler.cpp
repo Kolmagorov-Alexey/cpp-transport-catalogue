@@ -109,10 +109,8 @@ Node RequestHandler::ExecuteMakeNodeMap(int id_request,
     return result;
 }
  
-Node RequestHandler::ExecuteMakeNodeRoute(StatRequest& request, 
-                                             TransportCatalogue& catalogue, 
-                                             TransportRouter& routing) {
-    const auto& route_info = GetRouteInfo(request.from, request.to, catalogue, routing);
+Node RequestHandler::ExecuteMakeNodeRoute(StatRequest& request, TransportRouter& routing) {
+    const auto& route_info = GetRouteInfo(request.from, request.to, routing);
  
     if (!route_info) {
         return Builder{}.StartDict()
@@ -141,10 +139,7 @@ void RequestHandler::ExecuteQueries(TransportCatalogue& catalogue,
                                      RoutingSettings& routing_settings) {
  
     std::vector<Node> result_request;
-    TransportRouter routing;
- 
-    routing.SetRoutingSettings(routing_settings);
-    routing.BuildRouter(catalogue);
+    TransportRouter routing(routing_settings, catalogue);
  
     for (StatRequest req : stat_requests) {
  
@@ -158,7 +153,7 @@ void RequestHandler::ExecuteQueries(TransportCatalogue& catalogue,
             result_request.push_back(ExecuteMakeNodeMap(req.id, catalogue, render_settings));
             
         }  else if (req.type == "Route") {
-            result_request.push_back(ExecuteMakeNodeRoute(req, catalogue, routing));
+            result_request.push_back(ExecuteMakeNodeRoute(req, routing));
         }
     }
  
@@ -230,12 +225,9 @@ void RequestHandler::ExecuteRenderMap(MapRenderer& map_catalogue, TransportCatal
 }
  
 std::optional<RouteInfo> RequestHandler::GetRouteInfo(std::string_view start, 
-                                                        std::string_view end, 
-                                                        TransportCatalogue& catalogue, 
+                                                        std::string_view end,
                                                         TransportRouter& routing) const {
- 
-    return routing.GetRouteInfo(routing.GetRouterByStop(catalogue.GetStop(start))->bus_wait_start, 
-                                  routing.GetRouterByStop(catalogue.GetStop(end))->bus_wait_start);
+    return routing.GetRouteInfo(start, end);
 }
  
 std::vector<geo::Coordinates> RequestHandler::GetStopsCoordinates(TransportCatalogue& catalogue_) const {

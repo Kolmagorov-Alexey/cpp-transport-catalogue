@@ -34,7 +34,6 @@ public:
     Bus GetColor(Node& node, TransportCatalogue& catalogue);
     std::vector<Distance> ParseNodeDistances(Node& node, TransportCatalogue& catalogue);
     
-   
     
 private:
     Document document_;
